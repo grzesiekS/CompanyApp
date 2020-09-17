@@ -1,66 +1,85 @@
 // post.routes.js
 
 const express = require('express');
-const ObjectID = require('mongodb').ObjectID;
+const Prodcut = require('../models/product.model');
 const router = express.Router();
 
-router.get('/products', (req, res) => {
-  req.db.collection('products').find().toArray((err, data) => {
-    if(err) res.status(500).json({ message: err });
-    else res.json(data);
-  });
+router.get('/products', async (req, res) => {
+  try {
+    res.json(await Prodcut.find());
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.get('/products/random', (req, res) => {
-  req.db.collection('products').aggregate([ { $sample: { size: 1 }} ]).toArray((err, data) => {
-    if(err) res.status(500).json({ message: err });
-    else res.json(data[0]);
-  });
+router.get('/products/random', async (req, res) => {
+  try {
+    const count = await Prodcut.countDocuments();
+    const rand = Math.floor(Math.random() * count);
+    const pro = await Prodcut.findOne().skip(rand);
+    if(!pro) res.status(404).json({ message: 'Not found' });
+    else res.json(pro);
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.get('/products/:id', (req, res) => {
-  req.db.collection('products').findOne({ _id: ObjectID(req.params.id) }, (err, data) => {
-    if(err) res.status(500).json({ message: err });
-    else if(!data) res.status(404).json({ message: 'Not found' });
-    else res.json(data);
-  });
+router.get('/products/:id', async (req, res) => {
+  try {
+    const pro = await Prodcut.findById(req.params.id);
+    if(!pro) res.status(404).json({ message: 'Not found' });
+    else res.json(pro);
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.post('/products', (req, res) => {
-  const { name, client } = req.body;
-  req.db.collection('products').insertOne(
-    {
-      name: name,
-      client: client
-    },
-    err => {
-      if(err) res.status(500).json({message: err});
-      else res.json({ message: 'OK' });
-    }
-  );
-});
+router.post('/products', async (req, res) => {
+  try {
+    const { name, client } = req.body;
 
-router.put('/products/:id', (req, res) => {
-  const { name, client } = req.body;
-  req.db.collection('products').updateOne({ _id: ObjectID(req.params.id) }, 
-    { $set: 
+    const newProduct = new Prodcut(
       {
         name: name,
         client: client
-      }   
-    },
-    err => {
-      if(err) res.status(500).json({message: err});
-      else res.json({ message: 'OK' });
-    }
-  )
+      }
+    );
+    await newProduct.save();
+    res.json({ message: 'OK' });
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
 });
 
-router.delete('/products/:id', (req, res) => {
-  req.db.collection('products').deleteOne({ _id: ObjectID(req.params.id) }, err => {
-    if(err) res.status(500).json({ message: err });
-    else res.json({ message: 'OK' });
-  })
+router.put('/products/:id', async (req, res) => {
+  try {
+    const { name, client } = req.body;
+    const pro = await Prodcut.findById(req.params.id);
+
+    if(pro) {
+      pro.name = name;
+      pro.client = client;
+      await pro.save();
+      res.json({ message: 'OK' });
+    }
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
+});
+
+router.delete('/products/:id', async (req, res) => {
+  try {
+    const pro = await Prodcut.findById(req.params.id);
+    
+    if(pro) {
+      await pro.remove();
+      res.json({ message: 'OK' });
+    } 
+    else res.status(404).json({ message: 'Not found...' });
+
+  } catch(err) {
+    res.status(500).json({ message: err });
+  }
 });
 
 module.exports = router;
