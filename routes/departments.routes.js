@@ -1,5 +1,4 @@
 const express = require('express');
-const Department = require('../models/department.model');
 const DepartmentController = require('../controllers/departments.controller');
 
 const router = express.Router();
