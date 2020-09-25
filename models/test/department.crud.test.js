@@ -35,5 +35,15 @@ describe('Department', () => {
 
             expect(departments.length).to.be.equal(expectLength);
         });
+
+        it('should return a proper document by "name" with "findOne" method', async () => {
+            const department = await Department.findOne({ name: 'Department #1' });
+            const expectedName = 'Department #1';
+            expect(department.name).to.be.equal(expectedName);
+        });
+
+        after(async () => {
+            await Department.deleteMany();
+        });
     });
 });
