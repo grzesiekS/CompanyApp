@@ -52,6 +52,14 @@ describe('Employee', () => {
             expect(employees.length).to.be.equal(2);
         });
 
+        it('should contain objects in "department" field', async () => {
+            const employees = await Employee.find().populate('department');
+
+            employees.forEach(employee => {
+                expect(employee.department).to.be.a('Object');
+            })
+        });
+
         it('should return proper document by various params with "findOne" method', async () => {
             const employeeOne = await Employee.findOne({ firstName: 'John' });
             const employeeTwo = await Employee.findOne({ lastName: 'Doe' });
