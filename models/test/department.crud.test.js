@@ -136,4 +136,8 @@ describe('Department', () => {
             await Department.deleteMany();
         });
     });
+
+    after(async () => {
+        mongoose.connection.close();
+    });
 });
