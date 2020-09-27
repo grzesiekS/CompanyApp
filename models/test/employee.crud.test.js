@@ -45,19 +45,12 @@ describe('Employee', () => {
                 }
             );
             await testEmpTwo.save();
+
         });
 
         it('should return all the data with "find" method', async () => {
             const employees = await Employee.find().populate('department');
             expect(employees.length).to.be.equal(2);
-        });
-
-        it('should contain objects in "department" field', async () => {
-            const employees = await Employee.find().populate('department');
-
-            employees.forEach(employee => {
-                expect(employee.department).to.be.a('Object');
-            })
         });
 
         it('should return proper document by various params with "findOne" method', async () => {
@@ -68,12 +61,20 @@ describe('Employee', () => {
             expect(employeeTwo).to.not.be.null;
         });
 
-        it('should return populated department with "findOne" method', async () => {
-            const employee = await Employee.findOne({ firstName: 'John' }).populate('department');
+        // it('should contain objects in "department" field', async () => {
+        //     const employees = await Employee.find().populate('department');
 
-            expect(employee.department).to.not.be.null;
-            expect(employee.department.name).to.be.equal('Department #3');
-        });
+        //     employees.forEach(employee => {
+        //         expect(employee.department).to.be.a('Object');
+        //     })
+        // });
+
+        // it('should return populated department with "findOne" method', async () => {
+        //     const employee = await Employee.findOne({ firstName: 'John' }).populate('department');
+
+        //     expect(employee.department).to.not.be.null;
+        //     expect(employee.department.name).to.be.equal('Department #3');
+        // });
 
         after(async () => {
             await Employee.deleteMany();
@@ -195,6 +196,6 @@ describe('Employee', () => {
     });
 
     after(async () => {
-        mongoose.connection.close();
+        //mongoose.connection.close();
     });
 });

@@ -138,6 +138,6 @@ describe('Department', () => {
     });
 
     after(async () => {
-        mongoose.connection.close();
+        //mongoose.connection.close();
     });
 });
