@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "set NODE_ENV=production && mocha \"./{,!(node_modules)/**/}*.test.js\"",
-    "test:watch": "onchange \"./**/*.js\" -i -k -- yarn test"
+    "test:watch": "onchange \"./**/*.js\" -i -k -- yarn testAlt",
+    "testAlt": "set NODE_ENV=production && npx mocha --exit --recursive --timeout 5000 && mocha \"./models/test/*.test.js\""
   },
   "dependencies": {
     "chai": "4.2.0",
