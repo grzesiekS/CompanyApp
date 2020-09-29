@@ -19,5 +19,10 @@
     "mongoose": "5.7.1",
     "nodemon": "^1.19.1",
     "onchange": "6.1.0"
+  },
+ "config": {
+	  "mongodbMemoryServer": {
+	    "version": "latest"
+	  }
   }
 }
