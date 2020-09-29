@@ -2,23 +2,8 @@ const Employee = require('../employee.model.js');
 const Department = require('../department.model.js');
 const expect = require('chai').expect;
 const mongoose = require('mongoose');
-const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
 
 describe('Employee', () => {
-    before(async () => {
-
-        try {
-          const fakeDB = new MongoMemoryServer();
-
-          const uri = await fakeDB.getUri();
-
-          mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-      
-        } catch(err) {
-          console.log(err);
-        }
-      
-    });
 
     describe('Reading data', () => {
 
@@ -63,7 +48,6 @@ describe('Employee', () => {
 
         it('should contain objects in "department" field', async () => {
             const employees = await Employee.find().populate('department');
-
             employees.forEach(employee => {
                 expect(employee.department).to.be.a('Object');
             })
@@ -193,9 +177,5 @@ describe('Employee', () => {
         afterEach(async () => {
             await Employee.deleteMany();
         });
-    });
-
-    after(async () => {
-        mongoose.connection.close();
     });
 });
